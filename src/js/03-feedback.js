@@ -17,7 +17,7 @@ if (localStorage.getItem(STORAGE_KEY) !== null) {
 }
 
 function setData(e) { 
-  const formField = {
+  const formFields = {
     email: `${mail.value}`,
     message: `${comment.value}`,
   };
