@@ -1,55 +1,37 @@
 import throttle from 'lodash.throttle';
 
 const STORAGE_KEY = 'feedback-form-state';
-const form = document.querySelector('.feedback-form');
-const input =  document.querySelector('.feedback-form input');
-const textArea = document.querySelector('.feedback-form textarea');
-let email;
-let message;
-let data;
 
-form.addEventListener('submit', onFormSubmit);
-form.addEventListener('input', throttle(onMessageInput, 250));
+const mail = document.querySelector('input');
+const comment =  document.querySelector('textarea');
+const form = document.querySelector('form');
+const submitBtn = document.querySelector('button');
 
-function onFormSubmit (event) {
-    event.preventDefault();
-    
-    event.target.reset();
-    localStorage.removeItem(STORAGE_KEY);
+form.addEventListener('input', throttle(setData, 500));
+submitBtn.addEventListener('click', onSubmitClick);
 
-    console.log(data);
-};
-
-function createDataObject (email, message) {
-    const valueObject = {
-        email,
-        message
-    };
-    return valueObject;
+if (localStorage.getItem(STORAGE_KEY) !== null) { 
+  const storageData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  mail.value = storageData.emeil;
+  comment.value = storageData.message;
 }
-function onMessageInput (event) {
-    if(event.target.name === "email"){
-        email = event.target.value;
-    }
-    if(event.target.name === "message"){
-        message = event.target.value;
-    }
 
-    data = createDataObject(email, message);
-    
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-};
+function setData(e) { 
+  const formField = {
+    email: `${mail.value}`,
+    message: `${comment.value}`,
+  };
+  formFields[e.target.name] = e.target.value;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(formFields));
+}
 
+function onSubmitClick(e) { 
+  e.preventDefault();
 
-function onRefreshPage () {   
-    const savedMessegeParse = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-    data = savedMessegeParse;
-    email = savedMessegeParse.email;
-    message = savedMessegeParse.message;
-
-    input.value = savedMessegeParse.hasOwnProperty("email") ? savedMessegeParse.email : "";
-    textArea.value = savedMessegeParse.hasOwnProperty("message") ? savedMessegeParse.message : "";
-};
-
-onRefreshPage();
+  if ((mail.value && comment.value) === '') { 
+    return
+  }
+  console.log(JSON.parse(localStorage.getItem(STORAGE_KEY)));
+  localStorage.clear();
+  form.reset();
+}
