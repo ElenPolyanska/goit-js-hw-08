@@ -12,7 +12,7 @@ submitBtn.addEventListener('click', onSubmitClick);
 
 if (localStorage.getItem(STORAGE_KEY) !== null) { 
   const storageData = JSON.parse(localStorage.getItem(STORAGE_KEY));
-  mail.value = storageData.emeil;
+  mail.value = storageData.email;
   comment.value = storageData.message;
 }
 
