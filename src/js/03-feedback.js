@@ -1,37 +1,35 @@
 import throttle from 'lodash.throttle';
 
-const STORAGE_KEY = 'feedback-form-state';
+const formEl = document.querySelector('form');
+const inputEl = document.querySelector('input');
+const textareaEl = document.querySelector('textarea');
 
-const mail = document.querySelector('input');
-const comment =  document.querySelector('textarea');
-const form = document.querySelector('form');
-const submitBtn = document.querySelector('button');
+const LOCAL_STORAGE_KEY = 'feedback-form-state';
 
-form.addEventListener('input', throttle(setData, 500));
-submitBtn.addEventListener('click', onSubmitClick);
+populateTextarea();
 
-if (localStorage.getItem(STORAGE_KEY) !== null) { 
-  const storageData = JSON.parse(localStorage.getItem(STORAGE_KEY));
-  mail.value = storageData.email;
-  comment.value = storageData.message;
-}
+formEl.addEventListener('input', throttle(formDataToLocalStorage, 500))
+formEl.addEventListener('submit', formSubmit);
 
-function setData(e) { 
-  const formFields = {
-    email: `${mail.value}`,
-    message: `${comment.value}`,
-  };
-  formFields[e.target.name] = e.target.value;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(formFields));
-}
+function formDataToLocalStorage() {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ email: inputEl.value, message: textareaEl.value }));    
+};
 
-function onSubmitClick(e) { 
-  e.preventDefault();
+function formSubmit(event) {
+    event.preventDefault();
 
-  if ((mail.value && comment.value) === '') { 
-    return alert('Fill up the form, please')
-  }
-  console.log(JSON.parse(localStorage.getItem(STORAGE_KEY)));
-  localStorage.clear();
-  form.reset();
-}
+    console.log(localStorage.getItem(LOCAL_STORAGE_KEY));
+
+    event.currentTarget.reset();
+    localStorage.removeItem(LOCAL_STORAGE_KEY);    
+};
+
+function populateTextarea() {
+    const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const parsedSavedData = JSON.parse(savedData);
+    
+    if (savedData) {        
+        inputEl.value = parsedSavedData.email;
+        textareaEl.value = parsedSavedData.message;        
+    };    
+};
