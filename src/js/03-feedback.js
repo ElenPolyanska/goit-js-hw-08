@@ -21,22 +21,29 @@ function onFormInput(event) {
 
 function onFormSubmit(event) {
   event.preventDefault();
-  getSaveMessages();
-  if (saveMessage) {
-    console.log(saveMessage);
-    localStorage.removeItem(STORAGE_KEY);
-    formEl.reset();
-  }
+  event.currentTarget.reset();
+  const objData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  localStorage.removeItem(STORAGE_KEY);
+  formEl.reset();
+  // getSaveMessages();
+  // if (saveMessage) {
+  //   console.log(saveMessage);
+  //   localStorage.clear()
+  //   // localStorage.removeItem(STORAGE_KEY);
+  //   formEl.reset();
+  // }
 }
 
-function getSaveMessages() {
-  saveMessage = JSON.parse(localStorage.getItem(STORAGE_KEY));
-}
+// function getSaveMessages() {
+  // saveMessage = JSON.parse(localStorage.getItem(STORAGE_KEY));
+// }
 
 function updateFormData() {
-  getSaveMessages();
-  if (saveMessage) {
-    textareaEl.value = saveMessage.message;
-    inputEl.value = saveMessage.email;
+  saveMessage = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  if (saveMessage === null) {
+    return;
   }
+    textareaEl.value = saveMessage.message || '';
+    inputEl.value = saveMessage.email || '';
 }
+
