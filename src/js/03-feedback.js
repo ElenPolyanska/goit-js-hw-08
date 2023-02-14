@@ -29,7 +29,7 @@ function onSubmitClick(e) {
   e.preventDefault();
 
   if ((mail.value && comment.value) === '') { 
-    return
+    return alert('Fill up the form, please')
   }
   console.log(JSON.parse(localStorage.getItem(STORAGE_KEY)));
   localStorage.clear();
